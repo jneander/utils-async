@@ -1,0 +1,61 @@
+{
+  "name": "@jneander/utils-async",
+  "engines": {
+    "node": "12.18.1",
+    "yarn": "1.22.15"
+  },
+  "version": "1.0.4",
+  "description": "Asynchronous Utilities",
+  "main": "./lib/index.js",
+  "module": "./es/index.js",
+  "scripts": {
+    "build": "build-lib",
+    "build:production": "build-lib",
+    "build:watch": "build-lib --watch",
+    "clean": "clean",
+    "format": "yarn format:js",
+    "format:js": "format-js --pattern './src/**/*.js'",
+    "lint:js:fix": "lint-js --fix --pattern './src/**/*.js'",
+    "lint:js:test": "lint-js --test --pattern './src/**/*.js'",
+    "test": "./scripts/test.js",
+    "test:head": "yarn test --no-headless",
+    "test:head:watch": "yarn test --no-headless --watch",
+    "test:watch": "yarn test --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jneander/utils-async"
+  },
+  "keywords": [
+    "async",
+    "utils"
+  ],
+  "author": "Jeremy Neander <jeremy.neander@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jneander/utils-async/issues"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.13",
+    "@babel/plugin-transform-runtime": "^7.12.13",
+    "@babel/preset-env": "^7.12.13",
+    "@babel/runtime-corejs3": "^7.12.13",
+    "@jneander/dev-build": "^1.0.1",
+    "@jneander/dev-lint": "^1.0.1",
+    "@jneander/dev-utils-node": "^1.0.1",
+    "babel-loader": "^8.2.2",
+    "chai": "^4.3.0",
+    "core-js": "^3.8.3",
+    "karma": "^6.1.0",
+    "karma-chrome-launcher": "^3.1.0",
+    "karma-mocha": "^2.0.1",
+    "karma-sourcemap-loader": "^0.3.8",
+    "karma-spec-reporter": "^0.0.32",
+    "karma-webpack": "^5.0.0",
+    "mocha": "^8.2.1",
+    "process": "^0.11.10",
+    "sinon": "^9.2.4",
+    "util": "^0.12.3",
+    "webpack": "^5.21.1"
+  }
+}
