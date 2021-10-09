@@ -1,9 +1,5 @@
 {
   "name": "@jneander/utils-async",
-  "engines": {
-    "node": "12.18.1",
-    "yarn": "1.22.15"
-  },
   "version": "1.0.4",
   "description": "Asynchronous Utilities",
   "main": "./lib/index.js",
@@ -13,14 +9,14 @@
     "build:production": "build-lib",
     "build:watch": "build-lib --watch",
     "clean": "clean",
-    "format": "yarn format:js",
+    "format": "npm run format:js",
     "format:js": "format-js --pattern './src/**/*.js'",
     "lint:js:fix": "lint-js --fix --pattern './src/**/*.js'",
     "lint:js:test": "lint-js --test --pattern './src/**/*.js'",
     "test": "./scripts/test.js",
-    "test:head": "yarn test --no-headless",
-    "test:head:watch": "yarn test --no-headless --watch",
-    "test:watch": "yarn test --watch"
+    "test:head": "npm run test --no-headless",
+    "test:head:watch": "npm run test --no-headless --watch",
+    "test:watch": "npm run test --watch"
   },
   "repository": {
     "type": "git",
