@@ -2,10 +2,10 @@ const DEFAULT_INTERVAL = 0
 const DEFAULT_TIMEOUT = 1000 // ms
 
 const GLOBALS = {
-  clearInterval: window.clearInterval.bind(window),
-  clearTimeout: window.clearTimeout.bind(window),
-  setInterval: window.setInterval.bind(window),
-  setTimeout: window.setInterval.bind(window)
+  clearInterval: globalThis.clearInterval.bind(globalThis),
+  clearTimeout: globalThis.clearTimeout.bind(globalThis),
+  setInterval: globalThis.setInterval.bind(globalThis),
+  setTimeout: globalThis.setInterval.bind(globalThis)
 }
 
 export default async function waitForCondition(conditionFn, options = {}) {
