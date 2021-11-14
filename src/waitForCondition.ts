@@ -8,13 +8,28 @@ const GLOBALS = {
   setTimeout: globalThis.setInterval.bind(globalThis)
 }
 
-export default async function waitForCondition(conditionFn, options = {}) {
+export type WaitForConditionOptions = {
+  globals?: {
+    clearInterval: typeof clearInterval
+    clearTimeout: typeof clearTimeout
+    setInterval: typeof setInterval
+    setTimeout: typeof setTimeout
+  }
+
+  interval?: number
+  timeout?: number
+}
+
+export default async function waitForCondition(
+  conditionFn: () => boolean,
+  options: WaitForConditionOptions = {}
+) {
   return new Promise((resolve, reject) => {
     const intervalDuration = options.interval || DEFAULT_INTERVAL
     const timeoutDuration = options.timeout || DEFAULT_TIMEOUT
     const globals = options.globals || GLOBALS
 
-    let timeoutId
+    let timeoutId: ReturnType<typeof setTimeout>
 
     const intervalFn = () => {
       const result = conditionFn()
