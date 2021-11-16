@@ -9,6 +9,7 @@ src
 .eslintignore
 .prettierrc
 tsconfig.json
+.babelrc
 
 # Temporary Directories
 .babel-cache
