@@ -9,7 +9,9 @@
     "node": ">=14.17.0"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "npm run build:js && npm run build:types",
+    "build:js": "babel src --out-dir dist --extensions '.ts'",
+    "build:types": "tsc -p tsconfig.json --emitDeclarationOnly",
     "clean": "rimraf ./dist",
     "format:fix": "prettier --write ./src",
     "format:test": "prettier --check ./src",
@@ -32,10 +34,17 @@
     "url": "https://github.com/jneander/utils-async/issues"
   },
   "devDependencies": {
+    "@babel/cli": "^7.16.0",
+    "@babel/core": "^7.16.0",
+    "@babel/plugin-proposal-class-properties": "^7.16.0",
+    "@babel/preset-env": "^7.16.0",
+    "@babel/preset-typescript": "^7.16.0",
     "@typescript-eslint/eslint-plugin": "^5.3.1",
     "@typescript-eslint/parser": "^5.3.1",
+    "babel-plugin-add-import-extension": "^1.6.0",
     "eslint": "^8.2.0",
     "eslint-config-prettier": "^8.3.0",
+    "eslint-import-resolver-typescript": "^2.5.0",
     "eslint-plugin-eslint-comments": "^3.2.0",
     "eslint-plugin-import": "^2.25.3",
     "eslint-plugin-prettier": "^4.0.0",
