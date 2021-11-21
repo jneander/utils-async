@@ -29,4 +29,5 @@ jobs:
       - run: npm run types:test
       - run: npm run lint:test
       - run: npm run format:test
+      - run: npm run test
       - run: npm run build
