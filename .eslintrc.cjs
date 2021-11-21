@@ -26,16 +26,17 @@ module.exports = {
     sourceType: 'module'
   },
 
-  plugins: ['prettier'],
+  plugins: ['prettier', '@typescript-eslint'],
   root: true,
 
   rules: {
     'eslint-comments/no-unused-disable': 'error',
-    'import/extensions': ['error', 'ignorePackages', {js: 'never', ts: 'never'}],
+    'import/extensions': ['error', 'ignorePackages', {ts: 'never'}],
     'import/no-extraneous-dependencies': ['error', {devDependencies: true}],
-    'no-unused-vars': ['error', {argsIgnorePattern: '^_'}],
     'prettier/prettier': 'error',
     'arrow-body-style': 'off',
-    'prefer-arrow-callback': 'off'
+    'prefer-arrow-callback': 'off',
+    'no-unused-vars': 'off',
+    '@typescript-eslint/no-unused-vars': ['error', {argsIgnorePattern: '^_'}]
   }
 }
