@@ -18,7 +18,9 @@
     "lint:fix": "eslint ./src --fix --ext .ts",
     "lint:test": "eslint ./src --ext .ts",
     "prebuild": "npm run clean",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "types:test": "tsc --noEmit",
+    "types:test:watch": "tsc --noEmit --watch"
   },
   "repository": {
     "type": "git",
@@ -33,6 +35,7 @@
   "bugs": {
     "url": "https://github.com/jneander/utils-async/issues"
   },
+  "dependencies": {},
   "devDependencies": {
     "@babel/cli": "^7.16.0",
     "@babel/core": "^7.16.0",
