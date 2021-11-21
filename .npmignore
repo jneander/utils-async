@@ -9,6 +9,7 @@ src
 .eslintignore
 .prettierrc
 tsconfig.json
+.mocharc.json
 .babelrc
 
 # Temporary Directories
