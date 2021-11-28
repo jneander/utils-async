@@ -1,5 +1,9 @@
 {
   "ignore": ["src/**/*.spec.ts", "src/spec-support"],
   "plugins": ["@babel/plugin-proposal-class-properties", "babel-plugin-add-import-extension"],
-  "presets": [["@babel/preset-env", {"modules": false}], "@babel/preset-typescript"]
+
+  "presets": [
+    ["@babel/preset-env", {"modules": false, "exclude": ["transform-regenerator"]}],
+    "@babel/preset-typescript"
+  ]
 }
