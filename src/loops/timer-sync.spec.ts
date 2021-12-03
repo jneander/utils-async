@@ -44,6 +44,19 @@ describe('loops > TimerSync', () => {
     return globals.performance.now()
   }
 
+  describe('#targetTickIntervalMs', () => {
+    it('returns the configured `targetTickIntervalMs`', () => {
+      expect(timer.targetTickIntervalMs).to.equal(targetTickIntervalMs)
+    })
+  })
+
+  describe('#setTargetTickIntervalMs()', () => {
+    it('updates the configured `targetTickIntervalMs`', () => {
+      timer.setTargetTickIntervalMs(targetTickIntervalMs + 10)
+      expect(timer.targetTickIntervalMs).to.equal(targetTickIntervalMs + 10)
+    })
+  })
+
   describe('#start()', () => {
     it('begins the timer', () => {
       timer.start()
@@ -161,6 +174,74 @@ describe('loops > TimerSync', () => {
           clock.next() // advance time to next tick interval
           const [onTickTime] = onTick.lastCall.args
           expect(onTickTime).to.equal(timeAfterFirstOnTick + 1)
+        })
+      })
+    })
+
+    context('when the target interval is increased', () => {
+      context('when the timer has not yet started', () => {
+        beforeEach(() => {
+          timer.start()
+          // update target tick interval (moves 1st tick interval to 1001ms)
+          timer.setTargetTickIntervalMs(targetTickIntervalMs + 1)
+          // advance time to 999ms (1ms shy of 1st tick interval)
+          clock.tick(targetTickIntervalMs - 1)
+        })
+
+        it('does not call the `onTick` callback after the previous interval duration', () => {
+          // advance time to 1000ms (original 1st tick interval)
+          clock.tick(1)
+          expect(onTick.callCount).to.equal(0)
+        })
+
+        it('calls the `onTick` callback after the updated interval duration', () => {
+          // advance time to 1001ms (new 1st tick interval)
+          clock.tick(2)
+          expect(onTick.callCount).to.equal(1)
+        })
+      })
+
+      context('when the first interval has not yet elapsed', () => {
+        beforeEach(() => {
+          timer.start()
+          // advance time to 999ms (1ms shy of 1st tick interval)
+          clock.tick(targetTickIntervalMs - 1)
+          // update target tick interval (moves 1st tick interval to 1001ms)
+          timer.setTargetTickIntervalMs(targetTickIntervalMs + 1)
+        })
+
+        it('does not call the `onTick` callback after the previous interval duration', () => {
+          // advance time to 1000ms (original 1st tick interval)
+          clock.tick(1)
+          expect(onTick.callCount).to.equal(0)
+        })
+
+        it('calls the `onTick` callback after the updated interval duration', () => {
+          // advance time to 1001ms (new 1st tick interval)
+          clock.tick(2)
+          expect(onTick.callCount).to.equal(1)
+        })
+      })
+
+      context('when in a subsequent interval', () => {
+        beforeEach(() => {
+          timer.start()
+          // advance time to 2999ms (1ms shy of 3rd tick interval)
+          clock.tick(targetTickIntervalMs * 3 - 1)
+          // update target tick interval (moves 3rd tick interval to 3001ms)
+          timer.setTargetTickIntervalMs(targetTickIntervalMs + 1)
+        })
+
+        it('does not call the `onTick` callback after the previous interval duration', () => {
+          // advance time to 3000ms (original 3rd tick interval)
+          clock.tick(1)
+          expect(onTick.callCount).to.equal(2)
+        })
+
+        it('calls the `onTick` callback after the updated interval duration', () => {
+          // advance time to 3001ms (new 3rd tick interval)
+          clock.tick(2)
+          expect(onTick.callCount).to.equal(3)
         })
       })
     })

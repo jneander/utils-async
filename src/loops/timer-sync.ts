@@ -9,7 +9,10 @@ export type TimerTickCallback = (time: number) => void
 export type TimerErrorCallback = (reason: any) => void
 
 export interface TimerGlobals
-  extends Pick<Globals, 'document' | 'performance' | 'requestAnimationFrame' | 'setTimeout'> {}
+  extends Pick<
+    Globals,
+    'clearTimeout' | 'document' | 'performance' | 'requestAnimationFrame' | 'setTimeout'
+  > {}
 
 export interface TimerConfig {
   globals?: TimerGlobals
@@ -42,6 +45,7 @@ function ensureGlobals(globals?: TimerGlobals): TimerGlobals {
   }
 
   const timerGlobals: TimerGlobals = {
+    clearTimeout: globalThis.clearTimeout.bind(globalThis),
     performance: globalThis.performance,
     requestAnimationFrame: globalThis.requestAnimationFrame?.bind(globalThis),
     setTimeout: globalThis.setTimeout.bind(globalThis)
@@ -66,6 +70,8 @@ export class TimerSync {
   private _tickIntervalMs: number
   private _runId: number
   private _startTime: number | null
+  private _currentIntervalTimeoutId: ReturnType<Globals['setTimeout']> | null
+  private _currentIntervalStartTime: number | null
 
   /**
    * Creates an instance of TimerSync.
@@ -91,6 +97,8 @@ export class TimerSync {
     this._tickIntervalMs = safeTickIntervalMs(config.targetTickIntervalMs)
     this._runId = 0
     this._startTime = null
+    this._currentIntervalStartTime = null
+    this._currentIntervalTimeoutId = null
   }
 
   /**
@@ -116,6 +124,17 @@ export class TimerSync {
   }
 
   /**
+   * The configured, approximate amount of time that the timer should wait
+   * between ticks.
+   *
+   * @readonly
+   * @type {number} Interval duration in milliseconds.
+   */
+  get targetTickIntervalMs(): number {
+    return this._tickIntervalMs
+  }
+
+  /**
    * Sets the target interval per tick (in milliseconds) to the given value. If
    * the value is negative or not finite, the tick rate will be set to 1000ms.
    *
@@ -126,6 +145,12 @@ export class TimerSync {
    */
   setTargetTickIntervalMs(tickIntervalMs: number): void {
     this._tickIntervalMs = safeTickIntervalMs(tickIntervalMs)
+    if (!this.isRunning || this._currentIntervalTimeoutId == null) {
+      return
+    }
+
+    this.globals.clearTimeout(this._currentIntervalTimeoutId)
+    this.scheduleTick(this.globals.performance.now())
   }
 
   /**
@@ -151,29 +176,32 @@ export class TimerSync {
     this._startTime = null
   }
 
-  private scheduleTick(time: number): void {
-    const elapsed = time - this._startTime!
-    const roundedElapsed = Math.round(elapsed / this._tickIntervalMs) * this._tickIntervalMs
-    const targetNext = this._startTime! + roundedElapsed + this._tickIntervalMs
+  private scheduleTick(currentTimeMs: number): void {
+    const elapsedMs = currentTimeMs - this._currentIntervalStartTime!
+    const flooredElapsedMs = Math.floor(elapsedMs / this._tickIntervalMs) * this._tickIntervalMs
+    const targetNext = this._currentIntervalStartTime! + flooredElapsedMs + this._tickIntervalMs
     const delay = Math.max(0, targetNext - this.globals.performance.now())
 
     const currentRunId = this._runId
 
-    this.globals.setTimeout(() => {
+    this._currentIntervalStartTime = targetNext - this._tickIntervalMs
+    this._currentIntervalTimeoutId = this.globals.setTimeout(() => {
       this.globals.requestAnimationFrame!((rafTime: number) => {
+        this._currentIntervalStartTime = null
+        this._currentIntervalTimeoutId = null
         this.processTick(rafTime, currentRunId)
       })
     }, delay)
   }
 
-  private processTick(time: number, currentRunId: number): void {
+  private processTick(currentTimeMs: number, currentRunId: number): void {
     if (!this.isRunning || currentRunId !== this._runId) {
       return
     }
 
     try {
-      this.onTick(time)
-      this.scheduleTick(time)
+      this.onTick(currentTimeMs)
+      this.scheduleTick(currentTimeMs)
     } catch (error) {
       this.stop()
       try {
