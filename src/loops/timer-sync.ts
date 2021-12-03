@@ -150,7 +150,7 @@ export class TimerSync {
     }
 
     this.globals.clearTimeout(this._currentIntervalTimeoutId)
-    this.scheduleTick(this.globals.performance.now())
+    this.scheduleTick(this._currentIntervalStartTime!)
   }
 
   /**
@@ -176,10 +176,10 @@ export class TimerSync {
     this._startTime = null
   }
 
-  private scheduleTick(currentTimeMs: number): void {
-    const elapsedMs = currentTimeMs - this._currentIntervalStartTime!
-    const flooredElapsedMs = Math.floor(elapsedMs / this._tickIntervalMs) * this._tickIntervalMs
-    const targetNext = this._currentIntervalStartTime! + flooredElapsedMs + this._tickIntervalMs
+  private scheduleTick(intervalStartTimeMs: number): void {
+    const elapsedMs = intervalStartTimeMs - this._currentIntervalStartTime!
+    const roundedElapsedMs = Math.round(elapsedMs / this._tickIntervalMs) * this._tickIntervalMs
+    const targetNext = this._currentIntervalStartTime! + roundedElapsedMs + this._tickIntervalMs
     const delay = Math.max(0, targetNext - this.globals.performance.now())
 
     const currentRunId = this._runId
