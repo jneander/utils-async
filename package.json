@@ -37,13 +37,16 @@
   "bugs": {
     "url": "https://github.com/jneander/utils-async/issues"
   },
-  "dependencies": {},
+  "release": {
+    "extends": "@jneander/semantic-release-config"
+  },
   "devDependencies": {
     "@babel/cli": "^7.16.0",
     "@babel/core": "^7.16.0",
     "@babel/plugin-proposal-class-properties": "^7.16.0",
     "@babel/preset-env": "^7.16.0",
     "@babel/preset-typescript": "^7.16.0",
+    "@jneander/semantic-release-config": "^1.0.1",
     "@sinonjs/fake-timers": "^10.0.0",
     "@types/chai": "^4.2.22",
     "@types/mocha": "^10.0.0",
